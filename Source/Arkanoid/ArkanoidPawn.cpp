@@ -7,14 +7,14 @@ AArkanoidPawn::AArkanoidPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	//Setup Components
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
-	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Platform Mesh"));
-	MeshComponent->SetupAttachment(RootComponent);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> Platform(TEXT("/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube"));
-	MeshComponent->SetStaticMesh(Platform.Object);
-	MeshComponent->SetRelativeScale3D(FVector(1.0f, 3.5f, 1.0f));
 
+	// Setup Components
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
+	VausMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Vaus"));
+	VausMesh->SetupAttachment(RootComponent);
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> Platform(TEXT("/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube"));
+	VausMesh->SetStaticMesh(Platform.Object);
+	VausMesh->SetRelativeScale3D(FVector(1.0f, 3.5f, 1.0f));
 }
 
 // Called when the game starts or when spawned
@@ -34,7 +34,6 @@ void AArkanoidPawn::BeginPlay()
 void AArkanoidPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Move(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -43,6 +42,7 @@ void AArkanoidPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	if (PlayerInputComponent != nullptr)
 	{
+		//Handling left right movement
 		PlayerInputComponent->BindAxis("MoveRight", this, &AArkanoidPawn::MoveRight);
 	}
 }
@@ -50,23 +50,8 @@ void AArkanoidPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 // Called on axis input
 void AArkanoidPawn::MoveRight(float AxisValue)
 {
-	MovementInput = FMath::Clamp(AxisValue, -1.0f, 1.0f);
-}
-
-
-void AArkanoidPawn::Move(float DeltaTime)
-{
-	// Calculate Movement as such:
-	// 1. Get current location
-	// 2. Find the value of the direction vector multiplied by the movement input
-	// 3. Apply the newly found direction vector to the current location vector found in step 1
-	// 4. Set new location to end result value found in step 3
-	if (MovementInput != 0)
+	if (AxisValue != 0.0f)
 	{
-		FVector MoveLocation = GetActorLocation();
-		MovementInput *= SpeedMultipler;
-		MoveLocation += GetActorRightVector() * MovementInput * DeltaTime;
-		SetActorLocation(MoveLocation);
+		VausMesh->AddImpulse(FVector(-AxisValue * SpeedMultipler, 0.0f, 0.0f), "NAME_None", true);
 	}
-
 }

@@ -25,18 +25,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// Movement Variables
-	// Only using float as player just needs to travel left and right. (Normally it should be a FVector2D for forward and backward movement)
-	float MovementInput;
-	// Speed multipler applyed to axis input 
 	UPROPERTY(EditDefaultsOnly, Category ="Player Movement")
-	float SpeedMultipler;
-
-	// Movement Functions
+	float SpeedMultipler;				// Speed multipler applyed to axis input 
+	
+	//--Movement Function--//
 	void MoveRight(float AxisValue);
-	void Move(float DeltaTime);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Player Mesh")
-	class UStaticMeshComponent* MeshComponent;
-
+	// Mesh of the Player's platform
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Mesh")
+	class UStaticMeshComponent* VausMesh;
+	
 };
