@@ -21,18 +21,26 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+	// Mesh of the Player's platform
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Mesh")
+		class UStaticMeshComponent* VausMesh;
+	FVector DefaultPawnSize;
+
+	// Only One Power up can be spawned and used by the player at a time
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Attributes")
+	bool bHasPowerUp;
+
+	// Speed multiplier applied to axis input 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Attributes")
+		float SpeedMultiplier;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UPROPERTY(EditDefaultsOnly, Category ="Player Movement")
-	float SpeedMultipler;				// Speed multipler applyed to axis input 
 	
 	//--Movement Function--//
 	void MoveRight(float AxisValue);
-
-	// Mesh of the Player's platform
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Mesh")
-	class UStaticMeshComponent* VausMesh;
-	
+protected: 
+	float MovementDeltaTime;
 };

@@ -18,19 +18,26 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public:
+	//Mesh of the ball
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ball")
+		class UStaticMeshComponent* BallMesh;
+	//--Ball Movement Variables--//
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category = "Ball Movement")
+		float SpeedMultiplier;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ball Movement")
+		float DefaultSpeedMultipler;
+
+	// For when ball is destroyed or start of a level
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game Attributes")
+		bool bWaitToStart;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	//--Ball Movement Variables--//
-	UPROPERTY(EditDefaultsOnly, Category = "Ball Movement")
-	float SpeedMultipler;
-	float BounceAngle;
-	
 	//--Ball Movement Functions--//
+	UFUNCTION()
 	void ClampingMovement();
 
-	//Mesh of the ball
-	UPROPERTY(EditDefaultsOnly, Category = "Ball Mesh")
-	class UStaticMeshComponent* BallMesh;
 };

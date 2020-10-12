@@ -2,6 +2,7 @@
 
 
 #include "ArkanoidPawn.h"
+#include "Kismet/KismetMathLibrary.h"
 // Sets default values
 AArkanoidPawn::AArkanoidPawn()
 {
@@ -23,9 +24,9 @@ void AArkanoidPawn::BeginPlay()
 	Super::BeginPlay();
 
 	//Moving in game requires a unit per second as movement input alone is only between -1 to 1
-	if (SpeedMultipler == 0.0f)
+	if (SpeedMultiplier == 0.0f)
 	{
-		SpeedMultipler = 1000.0f;
+		SpeedMultiplier = 1000.0f;
 	}
 }
 
@@ -34,6 +35,9 @@ void AArkanoidPawn::BeginPlay()
 void AArkanoidPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//We want the ball to be moving at the same speed constantly
+	FVector ClampedVelocity = UKismetMathLibrary::ClampVectorSize(GetVelocity(), SpeedMultiplier, SpeedMultiplier);
+	VausMesh->SetPhysicsLinearVelocity(ClampedVelocity);
 }
 
 // Called to bind functionality to input
@@ -52,6 +56,6 @@ void AArkanoidPawn::MoveRight(float AxisValue)
 {
 	if (AxisValue != 0.0f)
 	{
-		VausMesh->AddImpulse(FVector(-AxisValue * SpeedMultipler, 0.0f, 0.0f), "NAME_None", true);
+		VausMesh->AddImpulse(FVector(-AxisValue * SpeedMultiplier, 0.0f, 0.0f), "NAME_None", true);
 	}
 }
