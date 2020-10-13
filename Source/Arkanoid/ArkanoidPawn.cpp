@@ -16,6 +16,8 @@ AArkanoidPawn::AArkanoidPawn()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Platform(TEXT("/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube"));
 	VausMesh->SetStaticMesh(Platform.Object);
 	VausMesh->SetRelativeScale3D(FVector(1.0f, 3.5f, 1.0f));
+	DefaultSize = VausMesh->GetRelativeScale3D();
+	bHasPowerUp = false;
 }
 
 // Called when the game starts or when spawned
@@ -35,9 +37,7 @@ void AArkanoidPawn::BeginPlay()
 void AArkanoidPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//We want the ball to be moving at the same speed constantly
-	FVector ClampedVelocity = UKismetMathLibrary::ClampVectorSize(GetVelocity(), SpeedMultiplier, SpeedMultiplier);
-	VausMesh->SetPhysicsLinearVelocity(ClampedVelocity);
+	ClampVelocity();
 }
 
 // Called to bind functionality to input
@@ -56,6 +56,14 @@ void AArkanoidPawn::MoveRight(float AxisValue)
 {
 	if (AxisValue != 0.0f)
 	{
+		// Adding force and apply it as change in velocity
 		VausMesh->AddImpulse(FVector(-AxisValue * SpeedMultiplier, 0.0f, 0.0f), "NAME_None", true);
 	}
+}
+
+void AArkanoidPawn::ClampVelocity()
+{
+	//We want the ball to be moving at the same speed constantly 
+	FVector ClampedVelocity = UKismetMathLibrary::ClampVectorSize(GetVelocity(), SpeedMultiplier, SpeedMultiplier);
+	VausMesh->SetPhysicsLinearVelocity(ClampedVelocity);
 }

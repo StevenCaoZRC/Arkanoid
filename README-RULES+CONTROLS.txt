@@ -25,3 +25,8 @@ Level 1: only blocks with 1hp
 Level 2: blocks with 1,2  and few 3hp
 
 Level 3: Same as Level 2 but with random power ups that spawn
+	NOTE: Can only have 1 power up spawned at one time, so even if you hit a block thats surpose to spawn power up but if you already have one, it will not spawn.
+
+Orange Powerup - Slow ball speed
+Cyan Powerup - Multiple balls
+Blue Powerup - Enlarge player platform

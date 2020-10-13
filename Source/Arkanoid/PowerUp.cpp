@@ -18,9 +18,10 @@ APowerUp::APowerUp()
 	RootComponent = PowerUpMesh;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Capsule(TEXT("/Game/StarterContent/Shapes/Shape_NarrowCapsule.Shape_NarrowCapsule"));
 	PowerUpMesh->SetStaticMesh(Capsule.Object);
-	PowerUpMesh->OnComponentHit.AddDynamic(this, &APowerUp::OnHit);
-	PowerUpMesh->SetRelativeRotation(FQuat(FVector(0.0f, 90.0f, 0.0f), 1.0f));
 
+	PowerUpMesh->SetRelativeRotation(FQuat(FVector(0.0f, 90.0f, 0.0f), 1.0f));
+	PowerUpMesh->SetSimulatePhysics(true);
+	PowerUpMesh->SetRelativeScale3D(FVector(1.5f,1.5,1.0f));
 }
 
 // Called when the game starts or when spawned
@@ -28,12 +29,18 @@ void APowerUp::BeginPlay()
 {
 	Super::BeginPlay();
 	// Launching the ball at the start
-
+	PowerUpMesh->OnComponentHit.AddDynamic(this, &APowerUp::OnHit);
 	PowerUpMesh->AddImpulse(FVector(0.0f, -SpeedMultiplier, 0.0f), "NAME_None", true);
 }
 
 void APowerUp::ApplyPowerUpEffects(TEnumAsByte<EPowerUpType> CurrentPowerUpType, AActor* AffectedActor)
 {
+	/*Sets up power up effects
+	* SLOW - Slowing the ball speed
+	* MULTIBALL - Two balls in game
+	* ENLARGE - Larger Player Platform
+	*/
+	//NOTE: this is determined by the CurrentPowerupType which is set on spawn of the power up and is randomized.
 	switch (CurrentPowerUpType)
 	{
 	case SLOW:
@@ -59,10 +66,8 @@ void APowerUp::ApplyPowerUpEffects(TEnumAsByte<EPowerUpType> CurrentPowerUpType,
 			ABall* BallRef = Cast<ABall>(ActorFound);
 			FVector BallLocation(BallRef->GetActorLocation());
 			FRotator BallRotation(0.0f, 0.0f, 0.0f);
-			FVector BallScale(1.0f, 1.0f, 1.0f);
 			FActorSpawnParameters BallSpawnParameters;
 			 GetWorld()->SpawnActor<ABall>(BallLocation, BallRotation, BallSpawnParameters);
-			//SpawnedBall->BallMesh->SetRelativeScale3D(BallScale);
 			Cast<AArkanoidGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->BallsInLevel += 1;
 		}
 		break;
@@ -71,8 +76,7 @@ void APowerUp::ApplyPowerUpEffects(TEnumAsByte<EPowerUpType> CurrentPowerUpType,
 	{
 		// Scale Up the Player Uniformly so collision boxes scaled up also to the right size
 		AArkanoidPawn* PlayerRef = Cast<AArkanoidPawn>(AffectedActor);
-		FVector EnLargeScale = FVector(PlayerRef->VausMesh->GetRelativeScale3D().X , PlayerRef->VausMesh->GetRelativeScale3D().Y * 1.5f, PlayerRef->VausMesh->GetRelativeScale3D().Z);
-		PlayerRef->VausMesh->SetRelativeScale3D(EnLargeScale);
+		PlayerRef->SetSizeForPowerUp();
 		break;
 	}
 	default:
@@ -85,8 +89,9 @@ void APowerUp::ApplyPowerUpEffects(TEnumAsByte<EPowerUpType> CurrentPowerUpType,
 
 void APowerUp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if ((OtherActor != nullptr) && (OtherActor != this) && !Cast<ABlock>(OtherActor))
+	if ((OtherActor != nullptr) && (OtherActor != this) )
 	{
+		// Apply affects of powers to the player
 		AArkanoidPawn* PlayerRef = Cast<AArkanoidPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 		ApplyPowerUpEffects(PowerUpType, PlayerRef);
 		Destroy();
@@ -95,6 +100,7 @@ void APowerUp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPri
 
 void APowerUp::FallingDown()
 {
+	// Travels down at a cosntant speed
 	FVector ClampedVelocity = UKismetMathLibrary::ClampVectorSize(GetVelocity(), SpeedMultiplier, SpeedMultiplier);
 	PowerUpMesh->SetPhysicsLinearVelocity(ClampedVelocity);
 }

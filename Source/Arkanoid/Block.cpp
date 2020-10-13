@@ -8,6 +8,8 @@
 #include "Materials/MaterialInstance.h"
 #include "ArkanoidGameInstance.h"
 #include "ArkanoidGameModeBase.h"
+#include "ArkanoidPawn.h"
+#include "PowerUp.h"
 
 // Sets default values
 ABlock::ABlock()
@@ -29,6 +31,7 @@ ABlock::ABlock()
 	BoxCollider->InitBoxExtent(FVector(60.0f));
 	BoxCollider->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
 	BoxCollider->SetGenerateOverlapEvents(true);
+
 	// NOTE: Need this for collsion logic to work! & Must create this before creating blueprint child of this class else it will not work in the constructor.
 	BoxCollider->OnComponentEndOverlap.AddDynamic(this, &ABlock::OnOverlapEnd);
 
@@ -40,6 +43,9 @@ ABlock::ABlock()
 	BlueMaterial = CreateDefaultSubobject<UMaterialInstance>(TEXT("Blue Material"));
 	MagentaMaterial = CreateDefaultSubobject<UMaterialInstance>(TEXT("Magenta Material"));
 	YellowMaterial = CreateDefaultSubobject<UMaterialInstance>(TEXT("Yellow Material"));
+
+	//Setup Variables
+	bCanSpawnPowerups = false;
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +57,12 @@ void ABlock::BeginPlay()
 
 void ABlock::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	/* On overlaping with a ball we want to do as such:
+	* Step1: Decreased the health of this current block
+	* Step2: Check process done in step 1 takes the total hp of the block to less then 0
+	* Step3: If Step 2 was successful, we want to award the player points and check if this block can spawn a power up (skip this step if step 2 was false)
+	* Step4: Delete this object
+	*/
 	if ((OtherActor!= nullptr) && (OtherActor != this))
 	{
 		//Modify Score
@@ -60,6 +72,14 @@ void ABlock::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActo
 			GameInstanceRef = Cast<UArkanoidGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 			GameInstanceRef->PlayerScore += Points;
 			Cast<AArkanoidGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->AmountOfBlocks -= 1;
+			AArkanoidPawn* PlayerRef = Cast<AArkanoidPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+			if (PlayerRef->bHasPowerUp == false)
+			{
+				// A Blueprint implemented function
+				// Checks if the current block can spawn a power up and spawns a power if the bool is true
+				SpawnPowerUp();
+				PlayerRef->bHasPowerUp = true;
+			}
 			Destroy();
 		}
 	}
@@ -68,6 +88,12 @@ void ABlock::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActo
 
 void ABlock::InitialiseBlockAttributes(EBlockType BlockType)
 {
+	/*Setting blocks attributes:
+	* Material
+	* Points the blocks are worth
+	* Health of the block
+	*/
+	//NOTE: this way we can easily change these attributes just by changing the block type of this block in editor
 	switch (BlockType)
 	{
 	case WHITE:

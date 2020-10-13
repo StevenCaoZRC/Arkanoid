@@ -35,9 +35,11 @@ protected:
 
 	void FallingDown();
 public:	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PowerUp")
+	// Power up type, selected on spawn of this object
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PowerUp")
 	TEnumAsByte<EPowerUpType> PowerUpType;
-
+	// capsule to mimic original arkanoid
+	// NOTE: Capsule collision has been altered to only have XY simple collision
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PowerUp")
 	class UStaticMeshComponent* PowerUpMesh;
 protected:

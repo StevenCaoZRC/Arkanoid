@@ -44,6 +44,10 @@ protected:
 	// Initialises: Material, Health, Points this block is worth depending on its BlockType
 	UFUNCTION()
 		void InitialiseBlockAttributes(EBlockType BlockType);
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Block Power Up")
+	void SpawnPowerUp();
+
 public:	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Block")
 		class UStaticMeshComponent* BlockMesh;
@@ -85,6 +89,9 @@ public:
 		class UMaterialInstance* YellowMaterial;
 #pragma endregion // Containing Block type, Material, Health and Points Variables
 
+	// Determines if this block can spawn a power up after being destroyed
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "BlockAttributes")
+	bool bCanSpawnPowerups;
 private:
 	class UArkanoidGameInstance* GameInstanceRef;
 };

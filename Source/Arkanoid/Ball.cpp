@@ -41,19 +41,15 @@ void ABall::BeginPlay()
 	{
 		SpeedMultiplier = 2000.0f;
 	}
-	
-	// Launching the ball at the start
-	if (IsRootComponentMovable())
-	{
-		BallMesh->AddImpulse(FVector(0.0f, -SpeedMultiplier, 0.0f), "NAME_None", true);
-	}
 }
 
 void ABall::ClampingMovement()
 {
-	//We want the ball to be moving at the same speed constantly
-	FVector ClampedVelocity = UKismetMathLibrary::ClampVectorSize(GetVelocity(), SpeedMultiplier, SpeedMultiplier);
+	// We want the ball to be moving at the same speed constantly
+	// Added Slight Variation to prevent ball from reaching a constant straight line or sine wave
+	FVector ClampedVelocity = UKismetMathLibrary::ClampVectorSize(GetVelocity(), SpeedMultiplier - 100.0f, SpeedMultiplier + 100.0f);
 	BallMesh->SetPhysicsLinearVelocity(ClampedVelocity);
+	
 }
 
 // Called every frame
