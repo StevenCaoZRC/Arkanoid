@@ -1,5 +1,7 @@
 Important Information:
 
+KNOWN ISSUE: When using enlarge power up, after lossing it the player is able to clip half its body though the wall. Was not able to fine what caused this, will continue to look for solution after submiting
+
 -Do not let the ball drop below the vaus platform. Keep it up by bouncing the ball off the vaus.
 -Clear all tiles to move on to next level.
 -Only have 3 Lives.
