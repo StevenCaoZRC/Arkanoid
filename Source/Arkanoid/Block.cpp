@@ -57,7 +57,7 @@ void ABlock::BeginPlay()
 
 void ABlock::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	/* On overlaping with a ball we want to do as such:
+	/* On overlapping with a ball we want to do as such:
 	* Step1: Decreased the health of this current block
 	* Step2: Check process done in step 1 takes the total hp of the block to less then 0
 	* Step3: If Step 2 was successful, we want to award the player points and check if this block can spawn a power up (skip this step if step 2 was false)

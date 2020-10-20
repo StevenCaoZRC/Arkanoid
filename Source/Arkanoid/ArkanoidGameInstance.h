@@ -7,7 +7,7 @@
 #include "ArkanoidGameInstance.generated.h"
 
 /**
- * 
+ * Arkanoid Game Instance - Stores the score, lives and levels left in this run
  */
 UCLASS()
 class ARKANOID_API UArkanoidGameInstance : public UGameInstance

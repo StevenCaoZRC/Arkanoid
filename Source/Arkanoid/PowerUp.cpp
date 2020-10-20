@@ -59,17 +59,8 @@ void APowerUp::ApplyPowerUpEffects(TEnumAsByte<EPowerUpType> CurrentPowerUpType,
 	{
 		// Add a extra ball at the current balls location
 		// Update Game mode with new amount of balls in level
-		TArray<AActor*> FoundBalls;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABall::StaticClass(), FoundBalls);
-		for (AActor* ActorFound : FoundBalls)
-		{
-			ABall* BallRef = Cast<ABall>(ActorFound);
-			FVector BallLocation(BallRef->GetActorLocation());
-			FRotator BallRotation(0.0f, 0.0f, 0.0f);
-			FActorSpawnParameters BallSpawnParameters;
-			 GetWorld()->SpawnActor<ABall>(BallLocation, BallRotation, BallSpawnParameters);
-			Cast<AArkanoidGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->BallsInLevel += 1;
-		}
+		// Calls Blueprint implementable function
+		SpawnMultiBall();
 		break;
 	}
 	case ENLARGE:
@@ -93,7 +84,10 @@ void APowerUp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPri
 	{
 		// Apply affects of powers to the player
 		AArkanoidPawn* PlayerRef = Cast<AArkanoidPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-		ApplyPowerUpEffects(PowerUpType, PlayerRef);
+		if (PlayerRef != nullptr)
+		{
+			ApplyPowerUpEffects(PowerUpType, PlayerRef);
+		}
 		Destroy();
 	}
 }

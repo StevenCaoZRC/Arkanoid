@@ -23,7 +23,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	//--Ball Movement Functions--//
-	UFUNCTION()
+	UFUNCTION(BlueprintImplementableEvent, Category ="Ball Movement")
 	void ClampingMovement();
 
 public:

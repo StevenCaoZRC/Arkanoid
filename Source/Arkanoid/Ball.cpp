@@ -16,7 +16,7 @@ ABall::ABall()
 	RootComponent = BallMesh;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Sphere(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
 	BallMesh->SetStaticMesh(Sphere.Object);
-	BallMesh->SetRelativeScale3D(FVector(0.7f));
+	BallMesh->SetRelativeScale3D(FVector(0.75f));
 
 	// Finding the white glowing material for the ball
 	static ConstructorHelpers::FObjectFinder<UMaterialInstance> WhiteMaterial(TEXT("/Game/Materials/Material_Instances/MI_BlockWhite.MI_BlockWhite"));
@@ -43,14 +43,6 @@ void ABall::BeginPlay()
 	}
 }
 
-void ABall::ClampingMovement()
-{
-	// We want the ball to be moving at the same speed constantly
-	// Added Slight Variation to prevent ball from reaching a constant straight line or sine wave
-	FVector ClampedVelocity = UKismetMathLibrary::ClampVectorSize(GetVelocity(), SpeedMultiplier - 100.0f, SpeedMultiplier + 100.0f);
-	BallMesh->SetPhysicsLinearVelocity(ClampedVelocity);
-	
-}
 
 // Called every frame
 void ABall::Tick(float DeltaTime)

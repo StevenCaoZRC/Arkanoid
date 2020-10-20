@@ -1,6 +1,7 @@
 Important Information:
 
 KNOWN ISSUE: When using enlarge power up, after lossing it the player is able to clip half its body though the wall. Was not able to fine what caused this, will continue to look for solution after submiting
+EDIT: Issue still not fixed but seems to do with when a static mesh component is scaled non-uniformly in tick, still investigating in my own time.
 
 -Do not let the ball drop below the vaus platform. Keep it up by bouncing the ball off the vaus.
 -Clear all tiles to move on to next level.
@@ -32,3 +33,7 @@ Level 3: Same as Level 2 but with random power ups that spawn
 Orange Powerup - Slow ball speed
 Cyan Powerup - Multiple balls
 Blue Powerup - Enlarge player platform
+
+Collide vaus with the power ups to aquire power up effects
+
+Gain + 1 life after successfully completing a level -  to make it easier to get through the game.

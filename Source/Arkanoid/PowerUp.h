@@ -33,6 +33,9 @@ protected:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "PowerUp")
+	void SpawnMultiBall();
+
 	void FallingDown();
 public:	
 	// Power up type, selected on spawn of this object
